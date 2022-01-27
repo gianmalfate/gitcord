@@ -1,34 +1,7 @@
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
+import React from 'react';
+import { useRouter } from 'next/router';
 import appConfig from '../config.json';
-
-function GlobalStyle() {
-    return (
-        <style global jsx>{`
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        list-style: none;
-      }
-      body {
-        font-family: 'Open Sans', sans-serif;
-      }
-      /* App fit Height */ 
-      html, body, #__next {
-        min-height: 100vh;
-        display: flex;
-        flex: 1;
-      }
-      #__next {
-        flex: 1;
-      }
-      #__next > * {
-        flex: 1;
-      }
-      /* ./App fit Height */ 
-    `}</style>
-    );
-}
 
 function Titulo(props) {
     const Tag = props.tag || 'h1';
@@ -60,16 +33,17 @@ function Titulo(props) {
 // export default HomePage
 
 export default function PaginaInicial() {
-    const username = 'gianmalfate';
+    // const username = 'gianmalfate';
+    const [username, setUsername] = React.useState('gianmalfate');
+    const roteamento = useRouter();
 
     return (
         <>
-            <GlobalStyle />
             <Box
                 styleSheet={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    backgroundColor: appConfig.theme.colors.primary[200],
-                    backgroundImage: 'url(http://st2.depositphotos.com/4144109/7007/i/450/depositphotos_70070295-Headphones-on-music-scores-vinyl-record-music-background.jpg)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'left',
+                    backgroundColor: appConfig.theme.colors.primary[400],
+                    backgroundImage: 'url(https://gitcord.com/catghost512by512by2.png)',
                     backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
                 }}
             >
@@ -85,30 +59,57 @@ export default function PaginaInicial() {
                         width: '100%', maxWidth: '700px',
                         borderRadius: '5px', padding: '32px', margin: '16px',
                         boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
-                        backgroundColor: appConfig.theme.colors.neutrals[700],
+                        backgroundColor: appConfig.theme.colors.neutrals[800],
                     }}
                 >
                     {/* Formulário */}
                     <Box
                         as="form"
+                        onSubmit={function (infosDoEvento) {
+                            infosDoEvento.preventDefault();
+                            console.log('Alguém submeteu o form');
+                            roteamento.push('/chat');
+                            // window.location.href = '/chat';
+                        }}
                         styleSheet={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                             width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
                         }}
                     >
                         <Titulo tag="h2">Welcome Back!</Titulo>
-                        <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
+                        <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[400] }}>
                             {appConfig.name}
                         </Text>
 
+                        {/* <input
+                                        type="text"
+                                        value={username}
+                                        onChange={function (event) {
+                                            console.log('usuario digitou', event.target.value);
+                                            // Onde ta o valor?
+                                            const valor = event.target.value;
+                                            // Trocar o valor da variavel
+                                            // através do React e avise quem precisa
+                                            setUsername(valor);
+                                        }}
+                                    /> */}
                         <TextField
+                            value={username}
+                            onChange={function (event) {
+                                console.log('usuario digitou', event.target.value);
+                                // Onde ta o valor?
+                                const valor = event.target.value;
+                                // Trocar o valor da variavel
+                                // através do React e avise quem precisa
+                                setUsername(valor);
+                            }}
                             fullWidth
                             textFieldColors={{
                                 neutral: {
                                     textColor: appConfig.theme.colors.neutrals[300],
-                                    mainColor: appConfig.theme.colors.neutrals[999],
+                                    mainColor: appConfig.theme.colors.primary[100],
                                     mainColorHighlight: appConfig.theme.colors.primary[500],
-                                    backgroundColor: appConfig.theme.colors.neutrals[800],
+                                    backgroundColor: appConfig.theme.colors.neutrals[900],
                                 },
                             }}
                         />
@@ -117,10 +118,10 @@ export default function PaginaInicial() {
                             label='Enter'
                             fullWidth
                             buttonColors={{
-                                contrastColor: appConfig.theme.colors.neutrals[500],
-                                mainColor: appConfig.theme.colors.primary[200],
-                                mainColorLight: appConfig.theme.colors.primary[500],
-                                mainColorStrong: appConfig.theme.colors.primary[500],
+                                contrastColor: appConfig.theme.colors.neutrals[300],
+                                mainColor: appConfig.theme.colors.primary[100],
+                                mainColorLight: appConfig.theme.colors.primary[100],
+                                mainColorStrong: appConfig.theme.colors.primary[400],
                             }}
                         />
                     </Box>
@@ -135,7 +136,7 @@ export default function PaginaInicial() {
                             alignItems: 'center',
                             maxWidth: '200px',
                             padding: '16px',
-                            backgroundColor: appConfig.theme.colors.neutrals[800],
+                            backgroundColor: appConfig.theme.colors.neutrals[900],
                             border: '1px solid',
                             borderColor: appConfig.theme.colors.neutrals[999],
                             borderRadius: '10px',
