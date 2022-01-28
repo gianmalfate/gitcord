@@ -20,7 +20,7 @@ export default function ChatPage() {
     function handleNovaMensagem(novaMensagem) {
         const mensagem = {
             id: listaDeMensagens.length + 1,
-            de: 'vanessametonini',
+            de: 'gianmalfate',
             texto: novaMensagem,
         };
 
@@ -38,7 +38,7 @@ export default function ChatPage() {
                 backgroundColor: appConfig.theme.colors.primary[400],
                 backgroundImage: `url(https://cdn.w600.comps.canstockphoto.com/binary-code-stock-photos_csp85558736.jpg)`,
                 backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
-                color: appConfig.theme.colors.neutrals['000']
+                color: appConfig.theme.colors.neutrals[`000`]
             }}
         >
             <Box
@@ -48,7 +48,7 @@ export default function ChatPage() {
                     flex: 1,
                     boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
                     borderRadius: '5px',
-                    backgroundColor: appConfig.theme.colors.neutrals[700],
+                    backgroundColor: appConfig.theme.colors.neutrals[800],
                     height: '100%',
                     maxWidth: '95%',
                     maxHeight: '95vh',
@@ -62,7 +62,7 @@ export default function ChatPage() {
                         display: 'flex',
                         flex: 1,
                         height: '80%',
-                        backgroundColor: appConfig.theme.colors.neutrals[600],
+                        backgroundColor: appConfig.theme.colors.neutrals[700],
                         flexDirection: 'column',
                         borderRadius: '5px',
                         padding: '16px',
@@ -95,7 +95,7 @@ export default function ChatPage() {
                                     handleNovaMensagem(mensagem);
                                 }
                             }}
-                            placeholder="Insira sua mensagem aqui..."
+                            placeholder="Type your message here..."
                             type="textarea"
                             styleSheet={{
                                 width: '100%',
@@ -103,9 +103,9 @@ export default function ChatPage() {
                                 resize: 'none',
                                 borderRadius: '5px',
                                 padding: '6px 8px',
-                                backgroundColor: appConfig.theme.colors.neutrals[800],
+                                backgroundColor: appConfig.theme.colors.neutrals[900],
                                 marginRight: '12px',
-                                color: appConfig.theme.colors.neutrals[200],
+                                color: appConfig.theme.colors.neutrals[`000`],
                             }}
                         />
                     </Box>
@@ -174,7 +174,7 @@ function MessageList(props) {
                                     display: 'inline-block',
                                     marginRight: '8px',
                                 }}
-                                src={`https://github.com/vanessametonini.png`}
+                                src={`https://github.com/gianmalfate.png`}
                             />
                             <Text tag="strong">
                                 {mensagem.de}
