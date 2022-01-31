@@ -1,15 +1,27 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import React from 'react';
 import appConfig from '../config.json';
+import { useRouter } from 'next/router';
 import { createClient } from '@supabase/supabase-js'
+import { ButtonSendSticker } from '../src/components/ButtonSendSticker';
 
 // Como fazer AJAX: https://medium.com/@omariosouto/entendendo-como-fazer-ajax-com-a-fetchapi-977ff20da3c6
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzQwMDI5NywiZXhwIjoxOTU4OTc2Mjk3fQ.VxzGDeOENFhvM5GTHRVphd8CXxqNez2s-iq0LjuQ6zs';
 const SUPABASE_URL = 'https://baavmeidyhmrwbjrbvbf.supabase.co';
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+function escutaMensagensEmTempoReal(adicionaMensagem) {
+    return supabaseClient
+        .from('mensagens')
+        .on('INSERT', (respostaLive) => {
+            adicionaMensagem(respostaLive.new);
+        })
+        .subscribe();
+}
 
 export default function ChatPage() {
+    const roteamento = useRouter();
+    const usuarioLogado = roteamento.query.username;
     const [mensagem, setMensagem] = React.useState('');
     const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
 
@@ -19,15 +31,38 @@ export default function ChatPage() {
             .select('*')
             .order('id', { ascending: false })
             .then(({ data }) => {
-                console.log('Dados da consulta:', data);
+                // console.log('Dados da consulta:', data);
                 setListaDeMensagens(data);
             });
+
+        const subscription = escutaMensagensEmTempoReal((novaMensagem) => {
+            console.log('Nova mensagem:', novaMensagem);
+            console.log('listaDeMensagens:', listaDeMensagens);
+            // Quero reusar um valor de referencia (objeto/array) 
+            // Passar uma função pro setState
+
+            // setListaDeMensagens([
+            //     novaMensagem,
+            //     ...listaDeMensagens
+            // ])
+            setListaDeMensagens((valorAtualDaLista) => {
+                console.log('valorAtualDaLista:', valorAtualDaLista);
+                return [
+                    novaMensagem,
+                    ...valorAtualDaLista,
+                ]
+            });
+        });
+
+        return () => {
+            subscription.unsubscribe();
+        }
     }, []);
 
     function handleNovaMensagem(novaMensagem) {
         const mensagem = {
             // id: listaDeMensagens.length + 1,
-            de: 'gianmalfate',
+            de: usuarioLogado,
             texto: novaMensagem,
         };
 
@@ -39,10 +74,6 @@ export default function ChatPage() {
             ])
             .then(({ data }) => {
                 console.log('Criando mensagem: ', data);
-                setListaDeMensagens([
-                    data[0],
-                    ...listaDeMensagens,
-                ]);
             });
 
         setMensagem('');
@@ -52,10 +83,10 @@ export default function ChatPage() {
         <Box
             styleSheet={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                backgroundColor: appConfig.theme.colors.primary[500],
-                backgroundImage: `url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)`,
+                backgroundColor: appConfig.theme.colors.primary[100],
+                backgroundImage: `url(https://st2.depositphotos.com/2247023/10253/v/950/depositphotos_102537936-stock-illustration-black-matrix-background-with-white.jpg)`,
                 backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
-                color: appConfig.theme.colors.neutrals['000']
+                color: appConfig.theme.colors.neutrals["000"]
             }}
         >
             <Box
@@ -65,7 +96,7 @@ export default function ChatPage() {
                     flex: 1,
                     boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
                     borderRadius: '5px',
-                    backgroundColor: appConfig.theme.colors.neutrals[700],
+                    backgroundColor: appConfig.theme.colors.neutrals[800],
                     height: '100%',
                     maxWidth: '95%',
                     maxHeight: '95vh',
@@ -79,7 +110,7 @@ export default function ChatPage() {
                         display: 'flex',
                         flex: 1,
                         height: '80%',
-                        backgroundColor: appConfig.theme.colors.neutrals[600],
+                        backgroundColor: appConfig.theme.colors.neutrals[700],
                         flexDirection: 'column',
                         borderRadius: '5px',
                         padding: '16px',
@@ -112,7 +143,7 @@ export default function ChatPage() {
                                     handleNovaMensagem(mensagem);
                                 }
                             }}
-                            placeholder="Insira sua mensagem aqui..."
+                            placeholder="Type your message here..."
                             type="textarea"
                             styleSheet={{
                                 width: '100%',
@@ -120,9 +151,16 @@ export default function ChatPage() {
                                 resize: 'none',
                                 borderRadius: '5px',
                                 padding: '6px 8px',
-                                backgroundColor: appConfig.theme.colors.neutrals[800],
+                                backgroundColor: appConfig.theme.colors.neutrals[900],
                                 marginRight: '12px',
                                 color: appConfig.theme.colors.neutrals[200],
+                            }}
+                        />
+                        {/* CallBack */}
+                        <ButtonSendSticker
+                            onStickerClick={(sticker) => {
+                                // console.log('[USANDO O COMPONENTE] Salva esse sticker no banco', sticker);
+                                handleNovaMensagem(':sticker: ' + sticker);
                             }}
                         />
                     </Box>
@@ -144,6 +182,11 @@ function Header() {
                     colorVariant='neutral'
                     label='Logout'
                     href="/"
+                    styleSheet={{
+                        hover: {
+                            backgroundColor: "#565656",
+                        },
+                    }}
                 />
             </Box>
         </>
@@ -151,7 +194,7 @@ function Header() {
 }
 
 function MessageList(props) {
-    console.log(props);
+    // console.log(props);
     return (
         <Box
             tag="ul"
@@ -170,7 +213,7 @@ function MessageList(props) {
                         key={mensagem.id}
                         tag="li"
                         styleSheet={{
-                            orderRadius: '5px',
+                            borderRadius: '5px',
                             padding: '6px',
                             marginBottom: '12px',
                             hover: {
@@ -207,7 +250,20 @@ function MessageList(props) {
                                 {(new Date().toLocaleDateString())}
                             </Text>
                         </Box>
-                        {mensagem.texto}
+                        {/* [Declarativo] */}
+                        {/* Condicional: {mensagem.texto.startsWith(':sticker:').toString()} */}
+                        {mensagem.texto.startsWith(':sticker:')
+                            ? (
+                                <Image src={mensagem.texto.replace(':sticker:', '')} />
+                            )
+                            : (
+                                mensagem.texto
+                            )}
+                        {/* if mensagem de texto possui stickers:
+                           mostra a imagem
+                        else 
+                           mensagem.texto */}
+                        {/* {mensagem.texto} */}
                     </Text>
                 );
             })}

@@ -68,7 +68,8 @@ export default function PaginaInicial() {
                         onSubmit={function (infosDoEvento) {
                             infosDoEvento.preventDefault();
                             console.log('Alguém submeteu o form');
-                            roteamento.push('/chat');
+                            // roteamento.push('/chat?username=' + username);
+                            roteamento.push(`/chat?username=${username}`);
                             // window.location.href = '/chat';
                         }}
                         styleSheet={{
@@ -82,17 +83,17 @@ export default function PaginaInicial() {
                         </Text>
 
                         {/* <input
-                                        type="text"
-                                        value={username}
-                                        onChange={function (event) {
-                                            console.log('usuario digitou', event.target.value);
-                                            // Onde ta o valor?
-                                            const valor = event.target.value;
-                                            // Trocar o valor da variavel
-                                            // através do React e avise quem precisa
-                                            setUsername(valor);
-                                        }}
-                                    /> */}
+                            type="text"
+                            value={username}
+                            onChange={function (event) {
+                                console.log('usuario digitou', event.target.value);
+                                // Onde ta o valor?
+                                const valor = event.target.value;
+                                // Trocar o valor da variavel
+                                // através do React e avise quem precisa
+                                setUsername(valor);
+                            }}
+                        /> */}
                         <TextField
                             value={username}
                             onChange={function (event) {
@@ -115,7 +116,7 @@ export default function PaginaInicial() {
                         />
                         <Button
                             type='submit'
-                            label='Enter'
+                            label='Entrar'
                             fullWidth
                             buttonColors={{
                                 contrastColor: appConfig.theme.colors.neutrals[300],
